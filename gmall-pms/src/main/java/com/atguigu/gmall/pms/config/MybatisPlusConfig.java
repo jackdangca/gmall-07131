@@ -13,9 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @MapperScan("com.baomidou.cloud.service.*.mapper*")
 public class MybatisPlusConfig {
-
-
-    
     // 最新版
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

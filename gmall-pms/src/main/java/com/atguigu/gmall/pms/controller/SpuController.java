@@ -2,8 +2,10 @@ package com.atguigu.gmall.pms.controller;
 
 import java.util.List;
 
+import com.atguigu.gmall.pms.vo.SpuVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,16 +35,30 @@ public class SpuController {
 
     @Autowired
     private SpuService spuService;
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     /**
      * 列表
      */
+    @GetMapping("category/{categoryId}")
+    public ResponseVo<PageResultVo>querySpuByCidAndPage(@PathVariable("categoryId")Long cid,PageParamVo paramVo){
+       PageResultVo resultVo =  this.spuService.querySpuByCidAndPage(cid,paramVo);
+        return ResponseVo.ok(resultVo);
+    }
     @GetMapping
     @ApiOperation("分页查询")
     public ResponseVo<PageResultVo> querySpuByPage(PageParamVo paramVo){
         PageResultVo pageResultVo = spuService.queryPage(paramVo);
 
         return ResponseVo.ok(pageResultVo);
+    }
+    @PostMapping("page")
+    @ApiOperation("分页查询")
+    public ResponseVo<List<SpuEntity>> querySpuByPageJson(@RequestBody PageParamVo paramVo){
+        PageResultVo pageResultVo = spuService.queryPage(paramVo);
+
+        return ResponseVo.ok((List<SpuEntity>)pageResultVo.getList());
     }
 
 
@@ -62,8 +78,9 @@ public class SpuController {
      */
     @PostMapping
     @ApiOperation("保存")
-    public ResponseVo<Object> save(@RequestBody SpuEntity spu){
-		spuService.save(spu);
+    public ResponseVo<Object> save(@RequestBody SpuVo spu){
+//		spuService.save(spu);
+        this.spuService.bigSave(spu);
 
         return ResponseVo.ok();
     }
@@ -75,6 +92,8 @@ public class SpuController {
     @ApiOperation("修改")
     public ResponseVo update(@RequestBody SpuEntity spu){
 		spuService.updateById(spu);
+		//发送消息给mq
+        this.rabbitTemplate.convertAndSend("pms_item_exchange","item.update",spu.getId());
 
         return ResponseVo.ok();
     }

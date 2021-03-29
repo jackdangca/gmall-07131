@@ -37,6 +37,25 @@ public class CategoryController {
     /**
      * 列表
      */
+    @GetMapping("all/{id}")
+    public ResponseVo<List<CategoryEntity>> queryLv123CategoriesByCid(@PathVariable("id")Long id){
+       List<CategoryEntity>categoryEntities =  this.categoryService.queryLv123CategoriesByCid(id);
+       return ResponseVo.ok(categoryEntities);
+
+
+    }
+    @GetMapping("parent/withsub/{pid}")
+    public ResponseVo<List<CategoryEntity>>queryCategoriesWithSubsByPid(@PathVariable("pid")Long pid){
+        List<CategoryEntity> categoryEntities =this.categoryService.queryCategoriesWithSubsByPid(pid);
+        return ResponseVo.ok(categoryEntities);
+
+    }
+
+    @GetMapping("parent/{parentId}")
+    public ResponseVo<List<CategoryEntity>>queryCategoriesByPid(@PathVariable("parentId")Long pid){
+        List<CategoryEntity> categoryEntities = this.categoryService.queryCategoriesByPid(pid);
+        return ResponseVo.ok(categoryEntities);
+    }
     @GetMapping
     @ApiOperation("分页查询")
     public ResponseVo<PageResultVo> queryCategoryByPage(PageParamVo paramVo){

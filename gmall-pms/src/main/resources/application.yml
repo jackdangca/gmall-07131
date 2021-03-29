@@ -10,3 +10,15 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+spring:
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: gmall-tx-group
+  rabbitmq:
+    virtual-host: /fengge
+    host: 192.168.76.129
+    username: fengge
+    password: fengge
+    publisher-confirm-type: correlated
+    publisher-returns: true

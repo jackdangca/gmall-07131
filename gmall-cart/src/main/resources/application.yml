@@ -1,0 +1,69 @@
+server:
+  port: 18090
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+        port: 8719
+    alibaba:
+      seata:
+        tx-service-group: gmall-tx-group
+  zipkin:
+    base-url: http:127.0.0.1:9411
+    locator:
+      discovery:
+        enabled: true
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
+  redis:
+    host: 192.168.76.129
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.76.129:3306/guli_cart
+    username: root
+    password: root
+
+  thymeleaf:
+    cache: false
+  task:
+    execution:
+      thread-name-prefix: cart-async-
+      pool:
+        core-size: 100
+        max-size: 500
+        queue-capacity: 1000
+        keep-alive: 60s
+        allow-core-thread-timeout: false
+      shutdown:
+        await-termination-period: 60
+        await-termination: true
+  rabbitmq:
+    host: 192.168.76.129
+    virtual-host: /fengge
+    username: fengge
+    password: fengge
+    listener:
+      simple:
+        prefetch: 1            #能者多劳
+        concurrency: 3 #多线程消费
+        acknowledge-mode: manual #消费者确认
+feign:
+  sentinel:
+    enabled: true
+auth:
+  jwt:
+    pubKeyPath: D:\Users\IdeaProjects\rsa\rsa.pub
+    cookieName: GMALL-TOKEN
+    userKey: user-key
+    expire: 15552000
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
